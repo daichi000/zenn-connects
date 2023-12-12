@@ -56,10 +56,10 @@ $ npm create cloudflare@latest my-next-app -- --framework=next
   Yes / No
 ```
 デプロイするを選択するとわずか1分ほどでホスティング完了！
-!["alt"](/image/zenn_20231213_1.png)
+!["alt"](/images/zenn_20231213_1.png)
 
 ダッシュボードでもプロジェクトが作成されていることが確認できる。
-!["alt"](/image/zenn_20231213_2.png)
+!["alt"](/images/zenn_20231213_2.png)
 
 # Honoのセットアップ
 https://hono.dev/getting-started/vercel
@@ -89,7 +89,7 @@ export const GET = handle(app)
 $ npm run pages:build
 $ npm run pages:dev
 ```
-!["alt"](/image/zenn_20231213_3.png)
+!["alt"](/images/zenn_20231213_3.png =480x)
 
 # D1のセットアップ
 https://developers.cloudflare.com/d1/get-started/
@@ -112,7 +112,7 @@ database_id = "database-id-xxxxxxxxx"
 ルートディレクトリに `wrangler.toml` を作成して貼り付けておく。
 
 なおこの時点でダッシュボードからDBが作成されていることが確認できる。
-!["alt"](/image/zenn_20231213_4.png)
+!["alt"](/images/zenn_20231213_4.png)
 
 ## SQL実行
 試しに公式にあるschemaファイルをルートディレクトリにおいて実行してみる。
@@ -157,10 +157,10 @@ $ npx wrangler d1 execute my-next-app-db --command='SELECT * FROM Customers'
 Cloudflare Pagesの場合、ローカルでは`wrangler.toml`から紐付けされるが本番では読み込まれないため、ダッシュボードから設定する必要がある。
 
 該当のプロジェクトから、設定、Functionsを開く。
-!["alt"](/image/zenn_20231213_5.png)
+!["alt"](/images/zenn_20231213_5.png)
 
 D1データベース バインディングの編集にて、該当のD1を選択する。
-!["alt"](/image/zenn_20231213_6.png)
+!["alt"](/images/zenn_20231213_6.png)
 
 これで本番のPages Functionとの紐付けができたのでD1のセットアップ完了！
 
@@ -245,7 +245,7 @@ preview_database_id = "DB" # Required for Pages local development <- 追記
 
 上記のとおり修正し、再度実行。
 
-!["alt"](/image/zenn_20231213_7.png)
+!["alt"](/images/zenn_20231213_7.png =480x)
 
 ようやく成功！
 
@@ -363,9 +363,9 @@ export const GET = handle(app);
 export const POST = handle(app);
 ```
 作成したPOSTとGETを実行してみる
-!["alt"](/image/zenn_20231213_8.png)
+!["alt"](/images/zenn_20231213_8.png =480x)
 
-!["alt"](/image/zenn_20231213_9.png)
+!["alt"](/images/zenn_20231213_9.png =480x)
 # まとめ
 さくっとCloudflareでフルスタック構成を試せた。
 次はSSRなどパフォーマンスの観点からも調査していきたい。
