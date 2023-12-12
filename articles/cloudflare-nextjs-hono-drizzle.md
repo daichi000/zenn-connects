@@ -367,5 +367,5 @@ export const POST = handle(app);
 
 !["alt"](/images/zenn_20231213_9.png =480x)
 # まとめ
-さくっとCloudflareでフルスタック構成を試せた！
+後半雑になってしまったが、さくっとCloudflareでフルスタック構成を試せた！
 次はSSRなどパフォーマンスの観点からも調査していきたい。
