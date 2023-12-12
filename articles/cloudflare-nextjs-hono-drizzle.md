@@ -302,7 +302,7 @@ ERROR: Transforming const to the configured target environment ("es5") is not su
 ```
 ```diff json:tsconfig.json
 - "target": "es5",
-+ "target": "es2017",
++ "target": "es6",
 ```
 成功するとmigrationファイルが作成される(ファイル名は自動で命名)
 ```
