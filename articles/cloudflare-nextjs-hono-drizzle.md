@@ -7,6 +7,10 @@ published: false
 ---
 
 # はじめに
+:::message
+この記事は [Cloudfalre Advent Calendar 2023](https://qiita.com/advent-calendar/2023/cloudflare) の12日目の記事となります。
+:::
+
 個人開発でWebサービスを作るにあたり、CloudflareやHonoなど普段の業務では縁のない技術を試してみた。
 CRUD操作ができるところまでをまとめてみる。
 
@@ -113,7 +117,7 @@ https://github.com/bajji-corporation/capturex-web/assets/35623457/9ba57267-3e85-
 ## SQL実行
 試しに公式にあるschemaファイルをルートディレクトリにおいて実行してみる。
 
-```schema.sql
+```sql:schema.sql
 DROP TABLE IF EXISTS Customers;
 CREATE TABLE IF NOT EXISTS Customers (CustomerId INTEGER PRIMARY KEY, CompanyName TEXT, ContactName TEXT);
 INSERT INTO Customers (CustomerID, CompanyName, ContactName) VALUES (1, 'Alfreds Futterkiste', 'Maria Anders'), (4, 'Around the Horn', 'Thomas Hardy'), (11, 'Bs Beverages', 'Victoria Ashworth'), (13, 'Bs Beverages', 'Random Name');
@@ -165,7 +169,7 @@ https://github.com/bajji-corporation/capturex-web/assets/35623457/e69f489a-fad0-
 https://developers.cloudflare.com/d1/examples/d1-and-hono/#
 
 Honoのドキュメントを参考に以下のように書いてみる
-```app/api/[[...route]]/route.ts
+```ts:app/api/[[...route]]/route.ts
 import { D1Database } from '@cloudflare/workers-types';
 import { Hono } from 'hono'
 import { handle } from 'hono/vercel'
@@ -225,5 +229,143 @@ $ [wrangler:inf] GET /api/query/customers 500 Internal Server Error (28ms)
 
 customersテーブルがない？
 先ほどテーブルの作成は確認できているので、ローカルからD1への接続がうまくいっていないぽい。
+こちらも調査したところ[公式ドキュメント](https://developers.cloudflare.com/d1/learning/local-development/#develop-locally-with-pages)に答えがあった。
+```toml:wrangler.toml
+# If you are only using Pages + D1, you only need the below in your wrangler.toml to interact with D1 locally.
+[[d1_databases]]
+binding = "DB" # Should match preview_database_id
+database_name = "YOUR_DATABASE_NAME"
+database_id = "the-id-of-your-D1-database-goes-here" # wrangler d1 info YOUR_DATABASE_NAME
+preview_database_id = "DB" # Required for Pages local development <- 追記
+```
+ローカルでD1に接続する場合は、`prevew_database_id`を追記する必要があるらしい。
+:::message
+なお、設定が追加された後のDBはデータが空状態になってしまうので、再度SQLを実行してデータが格納されていることを確認する。
+:::
+
+上記のとおり修正し、再度実行。
+
+https://github.com/bajji-corporation/capturex-web/assets/35623457/46235a42-c090-4466-8765-088de0a27b36
+
+ようやく成功！
 
 # Drizzle導入
+## Drizzleとは
+https://github.com/drizzle-team/drizzle-orm
+
+D1をサポートしているエッジ対応のORM。
+他にも[kysery](https://github.com/aidenwallis/kysely-d1)などいくつか候補があったが、一番評判が良さそうなDrizzleを使ってみる。
+
+## Drizzleセットアップ
+というわけでインストール。
+```
+$ npm install drizzle-orm
+$ npm install -D drizzle-kit
+```
+続いてschemaの定義を作成
+```ts:schema.ts
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+
+export const users = sqliteTable("users", {
+  userId: integer("userId", { mode: "number" })
+    .primaryKey({ autoIncrement: true })
+    .notNull(),
+  userName: text("userName").notNull(),
+});
+```
+drizzleの設定ファイルも追加
+```ts:drizzle.config.ts
+import type { Config } from "drizzle-kit";
+
+export default {
+  schema: "./schema.ts",
+  out: "./drizzle/migrations",
+  driver: "d1",
+  dbCredentials: {
+    wranglerConfigPath: "wrangler.toml",
+    dbName: "my-next-app-db",
+  },
+} satisfies Config;
+```
+:::message
+以前までローカルで動かすにはbetter-sqliteを入れる必要があったが不要になったらしい
+:::
+
+generateを実行すると、es5がサポート外というエラーになるのでtsconfigを修正する
+```
+$ npx drizzle-kit generate:sqlite
+drizzle-kit: v0.20.6
+drizzle-orm: v0.29.1
+
+No config path provided, using default 'drizzle.config.ts'
+ERROR: Transforming const to the configured target environment ("es5") is not supported yet
+```
+```diff json:tsconfig.json
+- "target": "es5",
++ "target": "es2017",
+```
+成功するとmigrationファイルが作成される(ファイル名は自動で命名)
+```
+$ [✓] Your SQL migration file ➜ drizzle/migrations/0000_far_smasher.sql 🚀
+```
+`wrangler.toml`にmigrations_dirを追加
+```diff toml:wrangler.toml
++ migrations_dir = "drizzle/migrations"
+```
+migration実行
+```
+$ npx wrangler d1 migrations apply my-next-app-db --local
+
+Migrations to be applied:
+┌──────────────────────┐
+│ name                 │
+├──────────────────────┤
+│ 0000_far_smasher.sql │
+└──────────────────────┘
+✔ About to apply 1 migration(s)
+Your database may not be available to serve requests during the migration, continue? … yes
+🌀 Mapping SQL input into an array of statements
+🌀 Executing on local database my-next-app-db (DB) from .wrangler/state/v3/d1:
+┌──────────────────────┬────────┐
+│ name                 │ status │
+├──────────────────────┼────────┤
+│ 0000_far_smasher.sql │ ✅       │
+└──────────────────────┴────────┘
+```
+## CRUD処理
+Honoで処理を書いてローカルD1に繋いで動かしてみる。
+```ts:route.ts
+/**
+ * get users
+ */
+app.get("/users", async (c) => {
+  const db = drizzle(process.env.DB);
+  const result = await db.select().from(users).all();
+  return c.json(result);
+});
+
+/**
+ * create users
+ */
+app.post("/users", async (c) => {
+  const params = await c.req.json<typeof users.$inferSelect>();
+  const db = drizzle(process.env.DB);
+  const result = await db
+    .insert(users)
+    .values({
+      userName: params.userName,
+    })
+    .execute();
+  return c.json(result);
+});
+
+export const GET = handle(app);
+export const POST = handle(app);
+```
+作成したPOSTとGETを実行してみる
+https://github.com/bajji-corporation/capturex-web/assets/35623457/1fa2c643-362c-4083-b194-3a2c94aa27bd
+
+https://github.com/bajji-corporation/capturex-web/assets/35623457/1a218bdc-0e5f-45c5-8f7d-25a5544bcec7
+# まとめ
+さくっとCloudflareでフルスタック構成を試せた。
+次はSSRなどパフォーマンスの観点からも調査していきたい。
