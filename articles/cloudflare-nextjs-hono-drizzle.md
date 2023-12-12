@@ -3,7 +3,7 @@ title: "Cloudflare Pages + Next.js + Hono + D1 + Drizzleで始めるフルスタ
 emoji: "🏔️"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["cloudflare", "nextjs", "d1", "hono", "drizzle"]
-published: false
+published: true
 ---
 
 # はじめに
