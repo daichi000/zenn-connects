@@ -46,7 +46,6 @@ $ wrangler login
 
 # Next.jsのセットアップ
 C3(create-cloudflare CLI)を使うことで新規プロジェクトの作成からデプロイまで一気通貫で行うことができてしまう。
-@cloudflare/next-on-pages
 https://developers.cloudflare.com/pages/framework-guides/deploy-a-nextjs-site/
 
 ```
