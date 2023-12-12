@@ -56,10 +56,10 @@ $ npm create cloudflare@latest my-next-app -- --framework=next
   Yes / No
 ```
 デプロイするを選択するとわずか1分ほどでホスティング完了！
-https://github.com/bajji-corporation/capturex-web/assets/35623457/0a5e0eec-8dcd-4f93-b1a8-5d609fb605b6
+!["alt"](https://github.com/bajji-corporation/capturex-web/assets/35623457/0a5e0eec-8dcd-4f93-b1a8-5d609fb605b6)
 
 ダッシュボードでもプロジェクトが作成されていることが確認できる。
-https://github.com/bajji-corporation/capturex-web/assets/35623457/dc1e6249-5ad4-4e25-97cc-f04d6b4c4c1a
+!["alt"](https://github.com/bajji-corporation/capturex-web/assets/35623457/dc1e6249-5ad4-4e25-97cc-f04d6b4c4c1a)
 
 # Honoのセットアップ
 https://hono.dev/getting-started/vercel
@@ -89,7 +89,7 @@ export const GET = handle(app)
 $ npm run pages:build
 $ npm run pages:dev
 ```
-https://github.com/bajji-corporation/capturex-web/assets/35623457/f4a6b17f-bb8e-4c21-9053-e05ab96adf61
+!["alt"](https://github.com/bajji-corporation/capturex-web/assets/35623457/f4a6b17f-bb8e-4c21-9053-e05ab96adf61)
 
 # D1のセットアップ
 https://developers.cloudflare.com/d1/get-started/
@@ -112,7 +112,7 @@ database_id = "database-id-xxxxxxxxx"
 ルートディレクトリに `wrangler.toml` を作成して貼り付けておく。
 
 なおこの時点でダッシュボードからDBが作成されていることが確認できる。
-https://github.com/bajji-corporation/capturex-web/assets/35623457/9ba57267-3e85-4d3b-88af-186b0e2b21e2
+!["alt"](https://github.com/bajji-corporation/capturex-web/assets/35623457/9ba57267-3e85-4d3b-88af-186b0e2b21e2)
 
 ## SQL実行
 試しに公式にあるschemaファイルをルートディレクトリにおいて実行してみる。
@@ -157,10 +157,10 @@ $ npx wrangler d1 execute my-next-app-db --command='SELECT * FROM Customers'
 Cloudflare Pagesの場合、ローカルでは`wrangler.toml`から紐付けされるが本番では読み込まれないため、ダッシュボードから設定する必要がある。
 
 該当のプロジェクトから、設定、Functionsを開く。
-https://github.com/bajji-corporation/capturex-web/assets/35623457/58151d29-e965-4a55-95a2-0a7792d0c0d9
+!["alt"](https://github.com/bajji-corporation/capturex-web/assets/35623457/58151d29-e965-4a55-95a2-0a7792d0c0d9)
 
 D1データベース バインディングの編集にて、該当のD1を選択する。
-https://github.com/bajji-corporation/capturex-web/assets/35623457/e69f489a-fad0-4e15-9df6-a8f17d320f34
+!["alt"](https://github.com/bajji-corporation/capturex-web/assets/35623457/e69f489a-fad0-4e15-9df6-a8f17d320f34)
 
 これで本番のPages Functionとの紐付けができたのでD1のセットアップ完了！
 
@@ -245,7 +245,7 @@ preview_database_id = "DB" # Required for Pages local development <- 追記
 
 上記のとおり修正し、再度実行。
 
-https://github.com/bajji-corporation/capturex-web/assets/35623457/46235a42-c090-4466-8765-088de0a27b36
+!["alt"](https://github.com/bajji-corporation/capturex-web/assets/35623457/46235a42-c090-4466-8765-088de0a27b36)
 
 ようやく成功！
 
@@ -363,9 +363,9 @@ export const GET = handle(app);
 export const POST = handle(app);
 ```
 作成したPOSTとGETを実行してみる
-https://github.com/bajji-corporation/capturex-web/assets/35623457/1fa2c643-362c-4083-b194-3a2c94aa27bd
+!["alt"](https://github.com/bajji-corporation/capturex-web/assets/35623457/1fa2c643-362c-4083-b194-3a2c94aa27bd)
 
-https://github.com/bajji-corporation/capturex-web/assets/35623457/1a218bdc-0e5f-45c5-8f7d-25a5544bcec7
+!["alt"](https://github.com/bajji-corporation/capturex-web/assets/35623457/1a218bdc-0e5f-45c5-8f7d-25a5544bcec7)
 # まとめ
 さくっとCloudflareでフルスタック構成を試せた。
 次はSSRなどパフォーマンスの観点からも調査していきたい。
