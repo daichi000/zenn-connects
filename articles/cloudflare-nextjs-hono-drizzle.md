@@ -312,7 +312,7 @@ $ [✓] Your SQL migration file ➜ drizzle/migrations/0000_far_smasher.sql 🚀
 ```diff toml:wrangler.toml
 + migrations_dir = "drizzle/migrations"
 ```
-migration実行
+migration実行！
 ```
 $ npx wrangler d1 migrations apply my-next-app-db --local
 
@@ -333,7 +333,8 @@ Your database may not be available to serve requests during the migration, conti
 └──────────────────────┴────────┘
 ```
 ## CRUD処理
-Honoで処理を書いてローカルD1に繋いで動かしてみる。
+Drizzleで処理を書いてローカルD1に繋いで動かしてみる。
+SQLライクな書き方なので馴染みやすい。
 ```ts:route.ts
 /**
  * get users
@@ -367,5 +368,5 @@ export const POST = handle(app);
 
 !["alt"](/images/zenn_20231213_9.png =480x)
 # まとめ
-さくっとCloudflareでフルスタック構成を試せた。
+さくっとCloudflareでフルスタック構成を試せた！
 次はSSRなどパフォーマンスの観点からも調査していきたい。
